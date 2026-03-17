@@ -1,0 +1,16 @@
+# SearXNG MCP Service
+# Provides search functionality via SearXNG engine
+
+FROM searxng/searxng:latest
+
+# Fix permissions on config directory
+RUN mkdir -p /etc/searxng && chmod 777 /etc/searxng
+
+# Expose SearXNG port
+EXPOSE 8080
+
+# Health check - use wget which should be available
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD wget --spider -q http://localhost:8080/health || exit 1
+
+# Run SearXNG - base image handles startup

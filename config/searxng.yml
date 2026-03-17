@@ -1,0 +1,50 @@
+# SearXNG Configuration
+# Production settings for local MCP deployment
+
+general:
+  debug: false
+  instance_name: "Local MCP SearXNG"
+  contact_instance: ""
+
+search:
+  safe_search: 0
+  autocomplete: "google"
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+server:
+  secret_key: "${SEARXNG_SECRET}"
+  bind_address: "0.0.0.0"
+  port: 8080
+  limiter: true
+  image_proxy: true
+  http_protocol_version: "1.1"
+
+ui:
+  static_use_hash: true
+  default_theme: simple
+  theme_args:
+    simple_style: dark
+
+engines:
+  - name: bing
+    engine: bing
+    shortcut: bi
+
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+
+  - name: google
+    engine: google
+    shortcut: go
+
+  - name: qwant
+    engine: qwant
+    shortcut: qw
+
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
