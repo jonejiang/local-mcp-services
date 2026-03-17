@@ -15,9 +15,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-PORTS=(18880 18881 18882 18883)
-SERVICES=(searxng easyocr playwright firecrawl)
-BACKEND_PORTS=(18880 18881 18882 18883)
+# Sandbox uses different ports to avoid conflict with main environment
+PORTS=(28880 28881 28882 28883)
+SERVICES=(searxng-sandbox easyocr-sandbox playwright-sandbox firecrawl-sandbox)
+BACKEND_PORTS=(28880 28881 28882 28883)
 
 # Colors
 RED='\033[0;31m'
@@ -278,7 +279,7 @@ functional_verify() {
 
     # 5.1 MCP Server initialization
     info "Testing MCP initialization..."
-    local result=$(echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | python3 mcp_server.py 2>&1)
+    local result=$(echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | MCP_SANDBOX=true python3 mcp_server.py 2>&1)
     if echo "$result" | grep -q "protocolVersion"; then
         log "MCP initialization: OK"
     else
@@ -287,7 +288,7 @@ functional_verify() {
 
     # 5.2 List tools
     info "Testing tools list..."
-    result=$(echo '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | python3 mcp_server.py 2>&1)
+    result=$(echo '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | MCP_SANDBOX=true python3 mcp_server.py 2>&1)
     if echo "$result" | grep -q "search"; then
         log "Tools list: OK"
     else
@@ -307,7 +308,7 @@ functional_verify() {
 
     # 5.4 SSRF Protection test
     info "Testing SSRF protection..."
-    result=$(echo '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"navigate","arguments":{"url":"http://192.168.1.1/"}}}' | python3 mcp_server.py 2>&1)
+    result=$(echo '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"navigate","arguments":{"url":"http://192.168.1.1/"}}}' | MCP_SANDBOX=true python3 mcp_server.py 2>&1)
     if echo "$result" | grep -qE "Blocked|error"; then
         log "SSRF protection: OK"
     else
@@ -338,10 +339,10 @@ main() {
     log "=========================================="
     echo ""
     log "Service URLs:"
-    log "  - SearXNG:    http://localhost:18880"
-    log "  - EasyOCR:    http://localhost:18881"
-    log "  - Playwright: http://localhost:18882"
-    log "  - Firecrawl:  http://localhost:18883"
+    log "  - SearXNG:    http://localhost:28880"
+    log "  - EasyOCR:    http://localhost:28881"
+    log "  - Playwright: http://localhost:28882"
+    log "  - Firecrawl:  http://localhost:28883"
     echo ""
     log "Security Checklist:"
     log "  [✓] CVE-2025-9074 version check"
@@ -357,7 +358,7 @@ main() {
     log "  [✓] Audit logging"
     echo ""
     log "Test Commands:"
-    log "  python3 mcp_server.py  # Start MCP server"
+    log "  MCP_SANDBOX=true python3 mcp_server.py  # Start MCP server (sandbox mode)"
     log "  bash validate_local_mcp.sh  # Run validation"
     echo ""
 }

@@ -1,6 +1,7 @@
-# Local MCP Services - Docker Compose
+# Local MCP Services - Docker Compose (Sandbox Version)
 # Security-focused configuration with comprehensive hardening
 # v7.0 - Full Security加固版本
+# 沙箱版本：使用不同端口避免与主环境冲突
 
 services:
   # SearXNG Search Service
@@ -8,11 +9,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.search
-    container_name: searxng
+    container_name: searxng-sandbox
     ports:
-      - "18880:8080"
+      - "28880:8080"
     environment:
-      - SEARXNG_BASE_URL=http://localhost:18880
+      - SEARXNG_BASE_URL=http://localhost:28880
       - SEARXNG_SECRET=${SEARXNG_SECRET:-changeme}
     volumes:
       - searxng-config:/etc/searxng
@@ -59,9 +60,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ocr
-    container_name: easyocr
+    container_name: easyocr-sandbox
     ports:
-      - "18881:8000"
+      - "28881:8000"
     # Security hardening
     security_opt:
       - no-new-privileges:true
@@ -98,9 +99,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.playwright
-    container_name: playwright
+    container_name: playwright-sandbox
     ports:
-      - "18882:3100"
+      - "28882:3100"
     # Security hardening
     security_opt:
       - no-new-privileges:true
@@ -139,9 +140,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.firecrawl
-    container_name: firecrawl
+    container_name: firecrawl-sandbox
     ports:
-      - "18883:8002"
+      - "28883:8002"
     # Security hardening
     security_opt:
       - no-new-privileges:true
@@ -181,7 +182,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.28.0.0/16
+        - subnet: 172.38.0.0/16
     driver_opts:
       com.docker.network.bridge.enable_icc: "false"
 

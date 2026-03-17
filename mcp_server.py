@@ -362,11 +362,15 @@ def validate_tool_input(tool_name: str, arguments: Dict) -> Optional[str]:
 
 def get_backend_url(tool_name: str) -> str:
     """Get backend service URL for tool"""
+    # Check if running in sandbox mode
+    sandbox_mode = os.environ.get("MCP_SANDBOX", "false").lower() == "true"
+    base_port = 28880 if sandbox_mode else 18880
+
     backend_map = {
-        "search": "http://localhost:18880",
-        "ocr": "http://localhost:18881",
-        "navigate": "http://localhost:18882",
-        "crawl": "http://localhost:18883",
+        "search": f"http://localhost:{base_port}",
+        "ocr": f"http://localhost:{base_port + 1}",
+        "navigate": f"http://localhost:{base_port + 2}",
+        "crawl": f"http://localhost:{base_port + 3}",
     }
     return backend_map.get(tool_name, "")
 
