@@ -16,7 +16,7 @@
 ### 构建镜像
 
 ```bash
-cd /Users/jone/AI/Agents/local-mcp-services
+cd local-mcp-services
 docker-compose build
 ```
 
