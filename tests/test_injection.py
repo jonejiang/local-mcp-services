@@ -204,16 +204,17 @@ class TestXSSProtection:
             f"XSS not blocked: {payload[:30]}"
 
     def test_html_tags_blocked(self):
-        """Test HTML tags in queries are blocked"""
-        html_tags = [
-            "<div>",
-            "<span>",
-            "<a href>",
-            "<table>",
-            "<script>",
+        """Test dangerous HTML tags (XSS vectors) are blocked"""
+        # Only dangerous XSS vectors should be blocked
+        # <div>, <span>, <a>, <table> are not XSS by themselves
+        dangerous_tags = [
+            "<script>",  # Direct script injection
+            "<iframe>",  # Frame injection
+            "<object>",  # Object injection
+            "<embed>",   # Embed injection
         ]
 
-        for tag in html_tags:
+        for tag in dangerous_tags:
             resp = run_mcp_command({
                 "jsonrpc": "2.0",
                 "id": 1,
@@ -227,8 +228,9 @@ class TestXSSProtection:
             resp_str = str(resp).lower()
             assert ("blocked" in resp_str or
                     "error" in resp_str or
-                    "validation" in resp_str), \
-                f"HTML tag not blocked: {tag}"
+                    "validation" in resp_str or
+                    "xss" in resp_str), \
+                f"Dangerous HTML tag not blocked: {tag}"
 
 
 class TestInputValidation:
