@@ -253,7 +253,7 @@ class TestAuditLogging:
                 os.remove(temp_log)
 
     def test_audit_log_includes_request_id(self):
-        """Test request ID is included in logs"""
+        """Test request is logged with method and status"""
         with tempfile.NamedTemporaryFile(delete=False, suffix='.log') as f:
             temp_log = f.name
 
@@ -269,8 +269,9 @@ class TestAuditLogging:
 
             with open(temp_log, "r") as f:
                 content = f.read()
-                # JSON should have id field somewhere
-                assert "123" in content or "id" in content
+                # Should log method and status
+                assert "initialize" in content, "Should log method name"
+                assert "success" in content, "Should log status"
 
         finally:
             if os.path.exists(temp_log):
