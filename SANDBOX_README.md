@@ -19,7 +19,7 @@
 ## 快速开始
 
 ```bash
-cd /Users/jone/AI/Agents/local-mcp-sandbox
+cd local-mcp-sandbox
 
 # 运行测试（不启动后端服务）
 python3 test_comprehensive.py
@@ -83,7 +83,7 @@ bash local-mcp-build.sh
 docker compose down
 
 # 删除沙箱工作区
-cd /Users/jone/AI/Agents
+cd <parent-directory>
 git worktree remove local-mcp-sandbox
 git branch -d sandbox
 ```

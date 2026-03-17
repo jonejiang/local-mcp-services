@@ -12,7 +12,10 @@ from typing import Dict, List
 from datetime import datetime
 
 
-MCP_SERVER = "/Users/jone/AI/Agents/local-mcp-services/mcp_server.py"
+# MCP Server path - use relative path
+import os
+SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MCP_SERVER = os.path.join(SCRIPT_DIR, "mcp_server.py")
 
 
 def run_mcp_command(cmd: Dict, env: Dict = None) -> Dict:
